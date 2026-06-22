@@ -1,1 +1,37 @@
-node_modules
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 日志
+*.log
+npm-debug.log*
+
+# 运行时
+pids/
+*.pid
+*.seed
+
+# 编辑器临时文件
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
