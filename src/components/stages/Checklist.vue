@@ -9,7 +9,7 @@
         v-for="item in items"
         :key="item.id"
         class="checklist-item"
-        :class="{ done: isDone(item.id) }"
+        :class="{ done: isDone(item.id), flashing: flashingIds.has(item.id) }"
       >
         <input
           type="checkbox"
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useProgressStore } from '@/stores/progressStore'
 
 const props = defineProps({
@@ -38,16 +38,26 @@ const props = defineProps({
 })
 
 const progressStore = useProgressStore()
+const flashingIds = ref(new Set())
 
 const isDone = id =>
   props.mode === 'acceptance'
     ? progressStore.isAcceptanceDone(id)
     : progressStore.isTaskDone(id)
 
-const toggle = id =>
+const toggle = id => {
   props.mode === 'acceptance'
     ? progressStore.toggleAcceptance(id)
     : progressStore.toggleTask(id)
+
+  // 触发闪烁动画
+  flashingIds.value = new Set([...flashingIds.value, id])
+  setTimeout(() => {
+    const next = new Set(flashingIds.value)
+    next.delete(id)
+    flashingIds.value = next
+  }, 400)
+}
 
 const doneCount = computed(() =>
   props.items.filter(i => isDone(i.id)).length,
@@ -104,6 +114,20 @@ const doneCount = computed(() =>
 .checklist-item.done .checklist-text {
   text-decoration: line-through;
   color: var(--text-muted);
+  text-decoration-color: var(--text-muted);
+  text-decoration-thickness: 1px;
+  transition: color var(--transition-normal);
+}
+
+/* 勾选闪烁 */
+.checklist-item.flashing {
+  animation: check-flash 400ms ease;
+  border-radius: var(--radius-sm);
+}
+
+/* 完成标记弹入 */
+.checklist-item .done-mark {
+  animation: scale-in 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .checklist-item input[type='checkbox'] {

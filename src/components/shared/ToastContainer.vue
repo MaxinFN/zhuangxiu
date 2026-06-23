@@ -1,5 +1,12 @@
 <template>
-  <div v-if="uiStore.toasts.length" class="toast-container" role="status" aria-live="polite">
+  <TransitionGroup
+    v-if="uiStore.toasts.length"
+    tag="div"
+    class="toast-container"
+    role="status"
+    aria-live="polite"
+    name="toast-list"
+  >
     <div
       v-for="toast in uiStore.toasts"
       :key="toast.id"
@@ -9,7 +16,7 @@
     >
       {{ toast.message }}
     </div>
-  </div>
+  </TransitionGroup>
 </template>
 
 <script setup>

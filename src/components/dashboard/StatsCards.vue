@@ -1,40 +1,40 @@
 <template>
   <div class="stats-grid">
-    <div class="stat-card warm">
+    <div class="stat-card warm anim-fade-in-up anim-delay-1">
       <div class="stat-card-top">
         <span class="stat-label">装修进度</span>
         <span class="stat-icon">📋</span>
       </div>
-      <div class="stat-value">{{ progressStore.completedCount }}/{{ progressStore.totalStages }}</div>
+      <div class="stat-value">{{ animatedComplete }}/{{ progressStore.totalStages }}</div>
       <div class="stat-sub">
         {{ progressStore.completedCount === progressStore.totalStages ? '🎉 全部完成！' : progressStore.completedCount === 0 ? '准备开始你的装修之旅' : `${inProgressCount} 个阶段进行中` }}
       </div>
     </div>
 
-    <div class="stat-card green">
+    <div class="stat-card green anim-fade-in-up anim-delay-2">
       <div class="stat-card-top">
         <span class="stat-label">知识阅读</span>
         <span class="stat-icon">📖</span>
       </div>
-      <div class="stat-value">{{ totalRead }}/{{ totalArticles }}</div>
+      <div class="stat-value">{{ animatedRead }}/{{ totalArticles }}</div>
       <div class="stat-sub">{{ totalArticles > 0 ? readPercent + '% 已阅读' : '开始学习装修知识' }}</div>
     </div>
 
-    <div class="stat-card amber">
+    <div class="stat-card amber anim-fade-in-up anim-delay-3">
       <div class="stat-card-top">
         <span class="stat-label">预算概览</span>
         <span class="stat-icon">💰</span>
       </div>
-      <div class="stat-value">{{ formatMoney(totalActual) }}</div>
+      <div class="stat-value">{{ formatMoney(animatedSpend) }}</div>
       <div class="stat-sub">{{ totalBudget > 0 ? '总预算 ' + formatMoney(totalBudget) : '去预算管理设置预算' }}</div>
     </div>
 
-    <div class="stat-card wood">
+    <div class="stat-card wood anim-fade-in-up anim-delay-4">
       <div class="stat-card-top">
         <span class="stat-label">工人联系</span>
         <span class="stat-icon">👷</span>
       </div>
-      <div class="stat-value">{{ workerCount }}</div>
+      <div class="stat-value">{{ animatedWorker }}</div>
       <div class="stat-sub">{{ workerCount > 0 ? '已记录 ' + workerCount + ' 位工人' : '去工人管理添加信息' }}</div>
     </div>
   </div>
@@ -47,6 +47,7 @@ import { useContentStore } from '@/stores/contentStore'
 import { useBudgetStore } from '@/stores/budgetStore'
 import { useWorkerStore } from '@/stores/workerStore'
 import { formatMoney } from '@/utils/format'
+import { useCountUp } from '@/composables/useCountUp'
 
 const progressStore = useProgressStore()
 const contentStore = useContentStore()
@@ -66,6 +67,12 @@ const readPercent = computed(() => totalArticles.value > 0 ? Math.round((totalRe
 const totalBudget = computed(() => budgetStore.totalBudget)
 const totalActual = computed(() => budgetStore.totalActual)
 const workerCount = computed(() => workerStore.totalWorkers)
+
+// 数值滚动动画
+const animatedComplete = useCountUp(computed(() => progressStore.completedCount), { duration: 500 })
+const animatedRead = useCountUp(totalRead, { duration: 500 })
+const animatedSpend = useCountUp(totalActual, { duration: 600 })
+const animatedWorker = useCountUp(workerCount, { duration: 500 })
 
 </script>
 

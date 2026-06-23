@@ -1,15 +1,16 @@
 <template>
   <div class="materials-view">
-    <div class="materials-intro card" style="margin-bottom: var(--space-lg);">
+    <div class="materials-intro card anim-fade-in-up" style="margin-bottom: var(--space-lg);">
       <h2>📦 装修材料清单</h2>
       <p class="intro-text">按装修阶段整理的完整材料清单，含推荐品牌和价格区间。勾选已采购项，跟踪材料准备进度。</p>
     </div>
 
     <div class="materials-grid">
       <div
-        v-for="stage in contentStore.stageList"
+        v-for="(stage, idx) in contentStore.stageList"
         :key="stage.id"
         class="material-stage-card card"
+        :style="{ animationDelay: (idx * 60) + 'ms' }"
       >
         <div class="stage-card-header">
           <div>
@@ -75,6 +76,16 @@ function progressColor(stageId) {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-md);
+}
+
+.material-stage-card {
+  animation: fade-in-up 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.material-stage-card:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-hover);
 }
 
 .stage-card-header {

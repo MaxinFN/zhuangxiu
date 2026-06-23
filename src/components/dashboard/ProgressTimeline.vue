@@ -83,6 +83,7 @@ const progressStore = useProgressStore()
 .mini-item.active .mini-dot {
   background: var(--accent-warm-soft);
   border-color: var(--accent-warm);
+  animation: pulse 2.5s ease infinite;
 }
 
 .mini-name {

@@ -209,6 +209,7 @@ function onClearConfirm() {
 .nav-item:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
+  transform: translateX(3px);
 }
 
 .nav-item.active {

@@ -10,13 +10,13 @@
     <StatsCards />
 
     <!-- 装修进度：全宽 -->
-    <div class="card progress-card">
+    <div class="card progress-card anim-fade-in-up anim-delay-5">
       <ProgressTimeline />
     </div>
 
     <!-- 下半部分：最近学习 + 预算速览 两列 -->
     <div class="dashboard-grid">
-      <div class="card learning-card">
+      <div class="card learning-card anim-fade-in-up anim-delay-6">
         <h3 class="section-title">📖 最近学习</h3>
         <div v-if="recentStages.length" class="recent-learning">
           <div
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <div class="card budget-card">
+      <div class="card budget-card anim-fade-in-up anim-delay-7">
         <h3 class="section-title">🧾 预算速览</h3>
         <div v-if="totalBudget > 0" class="budget-snapshot">
           <div class="budget-bar">

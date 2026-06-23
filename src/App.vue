@@ -6,7 +6,14 @@
     <main class="main-content">
       <AppHeader />
       <div class="page-content">
-        <router-view />
+        <router-view v-slot="{ Component, route }">
+          <transition
+            :name="route.meta.transition || 'page-slide'"
+            mode="out-in"
+          >
+            <component :is="Component" :key="route.path" />
+          </transition>
+        </router-view>
       </div>
     </main>
     <ToastContainer />
@@ -59,5 +66,24 @@ const uiStore = useUiStore()
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
+}
+
+/* 路由过渡动画 */
+.page-slide-enter-active {
+  transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-slide-leave-active {
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-slide-enter-from {
+  opacity: 0;
+  transform: translateX(12px);
+}
+
+.page-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-12px);
 }
 </style>

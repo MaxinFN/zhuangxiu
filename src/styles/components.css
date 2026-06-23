@@ -206,13 +206,31 @@
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-dropdown);
-  animation: toast-in 0.3s ease;
   max-width: 360px;
+  transition: all var(--transition-fast);
+}
+
+/* TransitionGroup 的进入/离开/移动 */
+.toast-list-enter-active {
+  animation: toast-in 300ms ease;
+}
+
+.toast-list-leave-active {
+  animation: toast-out 250ms ease;
+}
+
+.toast-list-move {
+  transition: transform 250ms ease;
 }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(20px); }
 }
 
 .toast.info { border-left: 3px solid var(--color-info); }

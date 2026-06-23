@@ -93,3 +93,76 @@ img {
   color: var(--text-muted);
   max-width: 360px;
 }
+
+/* ===== 共享入场动画 ===== */
+
+/* 从下方淡入 */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 从下方淡入（小幅度） */
+@keyframes fade-in-up-sm {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 从左侧淡入 */
+@keyframes fade-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* 缩放弹入 */
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* 纯淡入 */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* 脉冲 */
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 var(--accent-warm-soft); }
+  70%  { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* 勾选闪烁 */
+@keyframes check-flash {
+  0%   { background: var(--accent-warm-soft); }
+  100% { background: transparent; }
+}
+
+/* 入场动画应用类 */
+.anim-fade-in-up {
+  animation: fade-in-up 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.anim-fade-in-up-sm {
+  animation: fade-in-up-sm 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.anim-fade-in-left {
+  animation: fade-in-left 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.anim-scale-in {
+  animation: scale-in 250ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* 错峰延迟 */
+.anim-delay-1  { animation-delay: 0ms; }
+.anim-delay-2  { animation-delay: 60ms; }
+.anim-delay-3  { animation-delay: 120ms; }
+.anim-delay-4  { animation-delay: 180ms; }
+.anim-delay-5  { animation-delay: 240ms; }
+.anim-delay-6  { animation-delay: 300ms; }
+.anim-delay-7  { animation-delay: 360ms; }
+.anim-delay-8  { animation-delay: 420ms; }
+.anim-delay-9  { animation-delay: 480ms; }

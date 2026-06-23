@@ -55,39 +55,43 @@
       <div v-if="tabLoading" class="tab-loading">加载内容中...</div>
       <div v-else-if="tabError" class="tab-error">{{ tabError }}</div>
       <template v-else>
-        <!-- 概述Tab -->
-        <div v-if="activeTab === 'index'">
-          <div class="card">
-            <MarkdownViewer :content="currentMdContent" @ready="onMdReady" />
+        <transition name="tab-fade" mode="out-in">
+          <!-- 概述Tab -->
+          <div v-if="activeTab === 'index'" :key="'index'">
+            <div class="card">
+              <MarkdownViewer :content="currentMdContent" @ready="onMdReady" />
+            </div>
+
+            <!-- 本阶段任务清单 -->
+            <div class="card" style="margin-top: var(--space-lg);">
+              <Checklist
+                title="📋 本阶段任务"
+                :items="stageTasks"
+                mode="task"
+              />
+            </div>
           </div>
 
-          <!-- 本阶段任务清单 -->
-          <div class="card" style="margin-top: var(--space-lg);">
-            <Checklist
-              title="📋 本阶段任务"
-              :items="stageTasks"
-              mode="task"
-            />
+          <!-- 知识Tab (材料/工艺/验收/避坑) -->
+          <div v-else :key="activeTab" class="card">
+            <MarkdownViewer :content="currentMdContent" @ready="onContentReady" />
           </div>
-        </div>
-
-        <!-- 知识Tab (材料/工艺/验收/避坑) -->
-        <div v-else class="card">
-          <MarkdownViewer :content="currentMdContent" @ready="onContentReady" />
-        </div>
+        </transition>
       </template>
     </div>
 
     <!-- 返回顶部 -->
-    <button
-      v-show="showBackTop"
-      class="back-to-top"
-      title="返回顶部"
-      aria-label="返回页面顶部"
-      @click="scrollToTop"
-    >
-      ↑
-    </button>
+    <transition name="btn-fade">
+      <button
+        v-show="showBackTop"
+        class="back-to-top"
+        title="返回顶部"
+        aria-label="返回页面顶部"
+        @click="scrollToTop"
+      >
+        ↑
+      </button>
+    </transition>
   </div>
 
   <!-- 阶段未找到 -->
@@ -492,6 +496,25 @@ watch(() => route.params.stageId, (newId) => {
   color: var(--color-danger);
 }
 
+/* Tab 内容交叉淡入淡出 */
+.tab-fade-enter-active {
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-fade-leave-active {
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-fade-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.tab-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
 /* 返回顶部 */
 .back-to-top {
   position: fixed;
@@ -514,6 +537,25 @@ watch(() => route.params.stageId, (newId) => {
   z-index: 100;
   font-family: inherit;
   line-height: 1;
+}
+
+/* 返回顶部按钮过渡 */
+.btn-fade-enter-active {
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-fade-leave-active {
+  transition: all 200ms ease;
+}
+
+.btn-fade-enter-from {
+  opacity: 0;
+  transform: translateY(12px) scale(0.8);
+}
+
+.btn-fade-leave-to {
+  opacity: 0;
+  transform: translateY(12px) scale(0.8);
 }
 
 .back-to-top:hover {

@@ -24,6 +24,7 @@
           completed: progressStore.getStageStatus(stage.id) === 'completed',
           active: progressStore.getStageStatus(stage.id) === 'in-progress',
         }"
+        :style="{ animationDelay: (idx * 60) + 'ms' }"
         @click="selectStage(stage)"
         @keydown.enter="selectStage(stage)"
         @keydown.space.prevent="selectStage(stage)"
@@ -143,6 +144,7 @@ function selectStage(stage) {
   display: flex;
   gap: var(--space-lg);
   cursor: pointer;
+  animation: fade-in-up 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 /* 时间轴线条 */
@@ -178,6 +180,7 @@ function selectStage(stage) {
   border-color: var(--accent-warm);
   background: var(--accent-warm-soft);
   box-shadow: 0 0 0 4px var(--accent-warm-soft);
+  animation: pulse 2.5s ease infinite;
 }
 
 .timeline-connector {
