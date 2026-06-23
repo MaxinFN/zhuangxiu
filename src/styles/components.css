@@ -121,6 +121,18 @@
   min-height: 80px;
 }
 
+.form-input--error {
+  border-color: var(--color-danger) !important;
+  background: var(--color-danger-soft, #fef2f2);
+}
+
+.form-error {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  margin-top: 4px;
+}
+
 /* 表格 */
 .table {
   width: 100%;

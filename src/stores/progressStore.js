@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { loadJSON, saveJSON } from '@/utils/storage'
 
 const STORAGE_KEY_STAGE = 'reno_stage_status'
 const STORAGE_KEY_TASK = 'reno_task_status'
@@ -74,17 +75,6 @@ export const useProgressStore = defineStore('progress', () => {
 
   function isAcceptanceDone(checkId) {
     return !!acceptanceStatus.value[checkId]
-  }
-
-  function loadJSON(key, fallback) {
-    try {
-      const raw = localStorage.getItem(key)
-      return raw ? JSON.parse(raw) : fallback
-    } catch { return fallback }
-  }
-
-  function saveJSON(key, value) {
-    localStorage.setItem(key, JSON.stringify(value))
   }
 
   return {

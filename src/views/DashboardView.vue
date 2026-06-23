@@ -18,7 +18,7 @@
     <div class="dashboard-grid">
       <div class="card learning-card">
         <h3 class="section-title">📖 最近学习</h3>
-        <div class="recent-learning" v-if="recentStages.length">
+        <div v-if="recentStages.length" class="recent-learning">
           <div
             v-for="stage in recentStages"
             :key="stage.id"
@@ -48,7 +48,7 @@
 
       <div class="card budget-card">
         <h3 class="section-title">🧾 预算速览</h3>
-        <div class="budget-snapshot" v-if="totalBudget > 0">
+        <div v-if="totalBudget > 0" class="budget-snapshot">
           <div class="budget-bar">
             <div class="budget-bar-fill" :style="{ width: budgetPercent + '%' }"></div>
           </div>
@@ -85,11 +85,14 @@
 import { computed } from 'vue'
 import { useContentStore } from '@/stores/contentStore'
 import { useProgressStore } from '@/stores/progressStore'
+import { useBudgetStore } from '@/stores/budgetStore'
+import { formatMoney } from '@/utils/format'
 import StatsCards from '@/components/dashboard/StatsCards.vue'
 import ProgressTimeline from '@/components/dashboard/ProgressTimeline.vue'
 
 const contentStore = useContentStore()
 const progressStore = useProgressStore()
+const budgetStore = useBudgetStore()
 
 // 最近学习（按阶段顺序取前几个有进度或进行中的）
 const recentStages = computed(() => {
@@ -99,30 +102,14 @@ const recentStages = computed(() => {
   }).slice(0, 3)
 })
 
-// 预算数据
-const totalBudget = computed(() => {
-  try {
-    const budget = JSON.parse(localStorage.getItem('reno_budget_v2') || '[]')
-    return budget.reduce((sum, item) => sum + (parseFloat(item.budget) || 0), 0)
-  } catch { return 0 }
-})
-
-const totalActual = computed(() => {
-  try {
-    const budget = JSON.parse(localStorage.getItem('reno_budget_v2') || '[]')
-    return budget.reduce((sum, item) => sum + (parseFloat(item.actual) || 0), 0)
-  } catch { return 0 }
-})
+const totalBudget = computed(() => budgetStore.totalBudget)
+const totalActual = computed(() => budgetStore.totalActual)
 
 const budgetPercent = computed(() => {
   if (totalBudget.value === 0) return 0
   return Math.min(100, Math.round((totalActual.value / totalBudget.value) * 100))
 })
 
-function formatMoney(val) {
-  if (!val) return '¥0'
-  return '¥' + Number(val).toLocaleString('zh-CN', { maximumFractionDigits: 0 })
-}
 </script>
 
 <style scoped>

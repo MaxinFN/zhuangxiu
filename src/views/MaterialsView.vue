@@ -21,7 +21,7 @@
           </div>
         </div>
 
-        <div class="material-items" v-if="getItemCount(stage.id)">
+        <div v-if="getItemCount(stage.id)" class="material-items">
           <label
             v-for="item in materialStore.getMaterials(stage.id)"
             :key="item.id"
@@ -37,7 +37,7 @@
               <span class="material-name">{{ item.text }}</span>
               <span class="material-price">{{ item.price }}</span>
             </span>
-            <span class="material-note" v-if="item.note">{{ item.note }}</span>
+            <span v-if="item.note" class="material-note">{{ item.note }}</span>
           </label>
         </div>
         <div v-else class="empty-hint">暂无材料清单</div>

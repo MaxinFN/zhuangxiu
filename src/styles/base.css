@@ -66,21 +66,6 @@ img {
   background: var(--text-muted);
 }
 
-/* Element Plus 主题覆盖 */
-:root {
-  --el-color-primary: #C67B5C;
-  --el-color-primary-light-3: #D4A08A;
-  --el-color-primary-light-5: #DFB8A8;
-  --el-color-primary-light-7: #EBD0C5;
-  --el-color-primary-light-8: #F1DED6;
-  --el-color-primary-light-9: #F7EDE8;
-  --el-color-primary-dark-2: #B86A4C;
-  --el-color-success: #7D9B76;
-  --el-color-warning: #E8A849;
-  --el-color-danger: #D9756A;
-  --el-color-info: #B8956A;
-}
-
 /* 占位页面样式 */
 .placeholder-page {
   display: flex;

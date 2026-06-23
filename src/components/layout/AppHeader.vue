@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header-left">
-      <button class="mobile-menu-btn" @click="uiStore.toggleSidebar" title="菜单">
+      <button class="sidebar-toggle-btn" title="菜单" aria-label="切换侧边栏菜单" @click="uiStore.toggleSidebar">
         <span>☰</span>
       </button>
       <div class="header-title">
@@ -13,7 +13,9 @@
               v-if="item.to"
               :to="item.to"
               class="header-breadcrumb-link"
-            >{{ item.icon }} {{ item.label }}</router-link>
+            >
+              {{ item.icon }} {{ item.label }}
+            </router-link>
             <span v-else class="header-breadcrumb-current">{{ item.icon }} {{ item.label }}</span>
           </template>
         </nav>
@@ -70,14 +72,20 @@ const pageSubtitle = computed(() => {
   gap: var(--space-md);
 }
 
-.mobile-menu-btn {
-  display: none;
+.sidebar-toggle-btn {
   font-size: 1.25rem;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-primary);
   padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--bg-hover);
 }
 
 /* 面包屑 */
@@ -131,9 +139,6 @@ const pageSubtitle = computed(() => {
 }
 
 @media (max-width: 768px) {
-  .mobile-menu-btn {
-    display: block;
-  }
   .header-title h1 {
     font-size: var(--font-size-lg);
   }

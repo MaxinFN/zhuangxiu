@@ -17,7 +17,8 @@
           <span v-else>{{ idx + 1 }}</span>
         </div>
         <div class="mini-name">{{ stage.name }}</div>
-        <div v-if="idx < contentStore.stageList.length - 1" class="mini-line"
+        <div
+          v-if="idx < contentStore.stageList.length - 1" class="mini-line"
           :class="{ filled: progressStore.getStageStatus(stage.id) === 'completed' }"
         ></div>
       </div>

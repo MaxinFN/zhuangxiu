@@ -34,6 +34,7 @@ const uiStore = useUiStore()
   width: var(--sidebar-width);
   flex-shrink: 0;
   height: 100vh;
+  overflow: hidden;
   transition: width var(--transition-normal);
 }
 

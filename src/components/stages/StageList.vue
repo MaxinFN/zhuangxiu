@@ -25,6 +25,11 @@
           active: progressStore.getStageStatus(stage.id) === 'in-progress',
         }"
         @click="selectStage(stage)"
+        @keydown.enter="selectStage(stage)"
+        @keydown.space.prevent="selectStage(stage)"
+        tabindex="0"
+        role="button"
+        :aria-label="`进入${stage.name}阶段`"
       >
         <!-- 时间轴线条 -->
         <div class="timeline-line">
@@ -33,7 +38,8 @@
             <span v-else-if="progressStore.getStageStatus(stage.id) === 'in-progress'">🔄</span>
             <span v-else>{{ stage.icon }}</span>
           </div>
-          <div v-if="idx < contentStore.stageList.length - 1" class="timeline-connector"
+          <div
+            v-if="idx < contentStore.stageList.length - 1" class="timeline-connector"
             :class="{ filled: progressStore.getStageStatus(stage.id) === 'completed' }"
           ></div>
         </div>

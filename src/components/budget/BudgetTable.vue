@@ -33,7 +33,7 @@
 
     <!-- 表格 -->
     <div class="table-scroll">
-      <table class="budget-table" v-if="budgetStore.items.length">
+      <table v-if="budgetStore.items.length" class="budget-table">
         <thead>
           <tr>
             <th>#</th>
@@ -76,8 +76,8 @@
               </span>
             </td>
             <td>
-              <button class="btn-icon" @click="$emit('edit', item)" title="编辑">✏️</button>
-              <button class="btn-icon danger" @click="confirmDelete(item)" title="删除">🗑</button>
+              <button class="btn-icon" title="编辑" @click="$emit('edit', item)">✏️</button>
+              <button class="btn-icon danger" title="删除" @click="confirmDelete(item)">🗑</button>
             </td>
           </tr>
         </tbody>
@@ -103,9 +103,11 @@
 </template>
 
 <script setup>
+import * as XLSX from 'xlsx'
 import { useBudgetStore } from '@/stores/budgetStore'
+import { formatMoney } from '@/utils/format'
 
-const emit = defineEmits(['add', 'edit', 'import'])
+const emit = defineEmits(['add', 'edit', 'import', 'delete'])
 
 const budgetStore = useBudgetStore()
 
@@ -115,11 +117,6 @@ function getCatColor(key) {
 
 function getCatLabel(key) {
   return budgetStore.categories.find(c => c.key === key)?.label || key
-}
-
-function formatMoney(val) {
-  if (val == null || isNaN(val)) return '¥0'
-  return '¥' + Number(val).toLocaleString('zh-CN', { maximumFractionDigits: 0 })
 }
 
 function formatDiff(item) {
@@ -144,15 +141,10 @@ function priorityLabel(p) {
 }
 
 function confirmDelete(item) {
-  if (confirm(`确认删除「${item.name}」？`)) {
-    budgetStore.removeItem(item.id)
-  }
+  emit('delete', item)
 }
 
 function exportExcel() {
-  const XLSX = window.XLSX
-  if (!XLSX) return alert('Excel库未加载')
-
   const data = budgetStore.items.map((item, idx) => ({
     '#': idx + 1,
     '分类': getCatLabel(item.cat),

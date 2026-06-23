@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { loadJSON, generateId } from '@/utils/storage'
 
 const STORAGE_KEY_BUDGET = 'reno_budget_v2'
 const STORAGE_KEY_HOUSE = 'reno_house_info'
@@ -106,17 +107,6 @@ export const useBudgetStore = defineStore('budget', () => {
       id: item.id || generateId(),
     }))
     save()
-  }
-
-  function loadJSON(key, fallback) {
-    try {
-      const raw = localStorage.getItem(key)
-      return raw ? JSON.parse(raw) : fallback
-    } catch { return fallback }
-  }
-
-  function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
   }
 
   return {

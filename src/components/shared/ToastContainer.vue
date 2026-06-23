@@ -1,10 +1,11 @@
 <template>
-  <div class="toast-container" v-if="uiStore.toasts.length">
+  <div v-if="uiStore.toasts.length" class="toast-container" role="status" aria-live="polite">
     <div
       v-for="toast in uiStore.toasts"
       :key="toast.id"
       class="toast"
       :class="toast.type"
+      role="alert"
     >
       {{ toast.message }}
     </div>

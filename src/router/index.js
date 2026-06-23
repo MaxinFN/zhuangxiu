@@ -37,6 +37,12 @@ const routes = [
     component: () => import('@/views/WorkersView.vue'),
     meta: { title: '工人管理', icon: '👷' },
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/views/NotFoundView.vue'),
+    meta: { title: '页面未找到', icon: '🏗️' },
+  },
 ]
 
 const router = createRouter({

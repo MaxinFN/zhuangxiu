@@ -26,7 +26,7 @@
           <button class="btn btn-primary btn-sm" @click="$emit('add', selectedType)">+ 添加</button>
         </div>
 
-        <div class="worker-cards" v-if="typeWorkers.length">
+        <div v-if="typeWorkers.length" class="worker-cards">
           <div
             v-for="worker in typeWorkers"
             :key="worker.id"
@@ -35,7 +35,7 @@
             <div class="worker-card-header">
               <div class="worker-info">
                 <div class="worker-name">{{ worker.name || '未命名' }}</div>
-                <div class="worker-source" v-if="worker.source">{{ worker.source }}</div>
+                <div v-if="worker.source" class="worker-source">{{ worker.source }}</div>
               </div>
               <div class="worker-rating">
                 <span
@@ -49,22 +49,22 @@
             </div>
 
             <div class="worker-details">
-              <div class="detail-row" v-if="worker.phone">
+              <div v-if="worker.phone" class="detail-row">
                 <span class="detail-label">📞</span>
                 <span>{{ worker.phone }}</span>
               </div>
-              <div class="detail-row" v-if="worker.quote">
+              <div v-if="worker.quote" class="detail-row">
                 <span class="detail-label">💰</span>
                 <span>报价：{{ formatMoney(worker.quote) }}</span>
               </div>
-              <div class="detail-row" v-if="worker.notes">
+              <div v-if="worker.notes" class="detail-row">
                 <span class="detail-label">📝</span>
                 <span>{{ worker.notes }}</span>
               </div>
             </div>
 
             <!-- 通话记录 -->
-            <div class="call-records" v-if="workerStore.getCallRecords(worker.id).length">
+            <div v-if="workerStore.getCallRecords(worker.id).length" class="call-records">
               <div class="call-title">📞 沟通记录</div>
               <div
                 v-for="call in workerStore.getCallRecords(worker.id)"
@@ -73,7 +73,7 @@
               >
                 <div class="call-date">{{ call.date }}</div>
                 <div class="call-content">{{ call.content }}</div>
-                <div class="call-meta" v-if="call.quote">
+                <div v-if="call.quote" class="call-meta">
                   <span>报价：{{ formatMoney(call.quote) }}</span>
                   <span v-if="call.conditions">｜{{ call.conditions }}</span>
                   <span>｜态度：
@@ -108,8 +108,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useWorkerStore } from '@/stores/workerStore'
+import { formatMoney } from '@/utils/format'
 
-const emit = defineEmits(['add', 'edit', 'add-call'])
+const emit = defineEmits(['add', 'edit', 'add-call', 'delete'])
 
 const workerStore = useWorkerStore()
 const selectedType = ref(null)
@@ -131,14 +132,7 @@ function rateWorker(worker, rating) {
 }
 
 function removeWorker(worker) {
-  if (confirm(`确认删除「${worker.name || '未命名'}」的信息？`)) {
-    workerStore.removeWorker(worker.id)
-  }
-}
-
-function formatMoney(val) {
-  if (!val) return '¥0'
-  return '¥' + Number(val).toLocaleString('zh-CN')
+  emit('delete', worker)
 }
 </script>
 

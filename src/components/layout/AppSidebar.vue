@@ -9,7 +9,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-section-label" v-show="!uiStore.sidebarCollapsed">主菜单</div>
+      <div v-show="!uiStore.sidebarCollapsed" class="nav-section-label">主菜单</div>
 
       <router-link
         v-for="item in menuItems"
@@ -26,7 +26,7 @@
         >{{ item.badge }}</span>
       </router-link>
 
-      <div class="nav-section-label" v-show="!uiStore.sidebarCollapsed">工具</div>
+      <div v-show="!uiStore.sidebarCollapsed" class="nav-section-label">工具</div>
 
       <button class="nav-item" @click="handleBackup">
         <span class="nav-item-icon">📤</span>
@@ -42,22 +42,36 @@
       </button>
     </nav>
 
-    <div class="sidebar-footer" v-show="!uiStore.sidebarCollapsed">
+    <div v-show="!uiStore.sidebarCollapsed" class="sidebar-footer">
       <div class="sidebar-local-data">🔒 数据仅保存在当前浏览器</div>
       <div class="sidebar-version">v1.0</div>
     </div>
+
+    <ConfirmDialog
+      :visible="showClearDialog"
+      type="danger"
+      title="清除全部数据"
+      message="确定要清除所有本地数据吗？建议先导出备份。此操作不可撤销！"
+      confirm-text="确认清除"
+      @confirm="onClearConfirm"
+      @cancel="showClearDialog = false"
+    />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUiStore } from '@/stores/uiStore'
 import { useBackup } from '@/composables/useBackup'
+import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
 const uiStore = useUiStore()
 const backup = useBackup()
+
+const showClearDialog = ref(false)
 
 const menuItems = [
   { path: '/', label: '仪表盘', icon: '📊' },
@@ -104,13 +118,14 @@ function handleClear() {
     uiStore.showToast('没有需要清除的数据', 'info')
     return
   }
-  if (confirm('确定要清除全部数据吗？\n建议先点击"备份数据"导出备份。\n此操作不可撤销！')) {
-    if (confirm('再次确认：清除所有本地数据？')) {
-      backup.clearAllData()
-      uiStore.showToast('数据已清除。请刷新页面', 'success')
-      setTimeout(() => window.location.reload(), 1500)
-    }
-  }
+  showClearDialog.value = true
+}
+
+function onClearConfirm() {
+  backup.clearAllData()
+  showClearDialog.value = false
+  uiStore.showToast('数据已清除，即将刷新页面', 'success')
+  setTimeout(() => window.location.reload(), 1500)
 }
 </script>
 
@@ -137,15 +152,21 @@ function handleClear() {
   flex-shrink: 0;
 }
 
+.sidebar-brand {
+  overflow: hidden;
+}
+
 .sidebar-title {
   font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .sidebar-subtitle {
   font-size: var(--font-size-xs);
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -163,6 +184,8 @@ function handleClear() {
   letter-spacing: 0.05em;
   padding: var(--space-sm) var(--space-md);
   margin-top: var(--space-sm);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .nav-item {
@@ -219,6 +242,8 @@ function handleClear() {
   font-size: var(--font-size-xs);
   color: var(--text-muted);
   line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidebar-version {
@@ -226,5 +251,6 @@ function handleClear() {
   color: var(--text-muted);
   margin-top: var(--space-xs);
   opacity: 0.5;
+  white-space: nowrap;
 }
 </style>

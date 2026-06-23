@@ -7,7 +7,7 @@ import { marked, Renderer } from 'marked'
  */
 function generateId(text) {
   let cleaned = text
-    .replace(/[`*_~\[\]()（）【】《》、，。！？：；""''…—]/g, '')
+    .replace(/[`*_~[\]()（）【】《》、，。！？：；""''…—]/g, '')
     .toLowerCase()
     .replace(/[^\w一-鿿-]/g, '-')
     .replace(/-+/g, '-')
@@ -77,7 +77,7 @@ export function useMarkdown() {
       if (match) {
         const rawText = match[2].trim()
         // 去掉行内 markdown 格式标记得到纯文本
-        const plainText = rawText.replace(/[`*_~\[\]()]/g, '').trim()
+        const plainText = rawText.replace(/[`*_~[\]()]/g, '').trim()
         const id = generateId(plainText)
         h.push({
           level: match[1].length,

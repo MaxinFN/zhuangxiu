@@ -1,5 +1,5 @@
 <template>
-  <div class="stage-detail" v-if="stage">
+  <div v-if="stage" class="stage-detail">
     <!-- 阶段头部 -->
     <div class="stage-hero">
       <div class="stage-hero-info">
@@ -31,7 +31,7 @@
     </div>
 
     <!-- 内容Tab -->
-    <div class="content-tabs">
+    <div class="content-tabs" role="tablist" :aria-label="`${stage?.name || ''}内容标签`">
       <button
         v-for="tab in tabs"
         :key="tab.key"
@@ -40,6 +40,8 @@
           active: activeTab === tab.key,
           read: contentStore.isRead(stage.id, tab.key),
         }"
+        role="tab"
+        :aria-selected="activeTab === tab.key"
         @click="switchTab(tab.key)"
       >
         <span class="tab-icon">{{ tab.icon }}</span>
@@ -61,9 +63,10 @@
 
           <!-- 本阶段任务清单 -->
           <div class="card" style="margin-top: var(--space-lg);">
-            <TaskChecklist
+            <Checklist
               title="📋 本阶段任务"
-              :tasks="stageTasks"
+              :items="stageTasks"
+              mode="task"
             />
           </div>
         </div>
@@ -79,8 +82,9 @@
     <button
       v-show="showBackTop"
       class="back-to-top"
-      @click="scrollToTop"
       title="返回顶部"
+      aria-label="返回页面顶部"
+      @click="scrollToTop"
     >
       ↑
     </button>
@@ -103,7 +107,7 @@ import { useContentStore } from '@/stores/contentStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { useUiStore } from '@/stores/uiStore'
 import MarkdownViewer from '@/components/shared/MarkdownViewer.vue'
-import TaskChecklist from '@/components/stages/TaskChecklist.vue'
+import Checklist from '@/components/stages/Checklist.vue'
 
 const route = useRoute()
 const contentStore = useContentStore()

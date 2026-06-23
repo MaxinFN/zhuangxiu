@@ -44,9 +44,14 @@
 import { computed } from 'vue'
 import { useProgressStore } from '@/stores/progressStore'
 import { useContentStore } from '@/stores/contentStore'
+import { useBudgetStore } from '@/stores/budgetStore'
+import { useWorkerStore } from '@/stores/workerStore'
+import { formatMoney } from '@/utils/format'
 
 const progressStore = useProgressStore()
 const contentStore = useContentStore()
+const budgetStore = useBudgetStore()
+const workerStore = useWorkerStore()
 
 const inProgressCount = computed(() => {
   return Object.values(progressStore.stageStatus).filter(s => s === 'in-progress').length
@@ -58,33 +63,10 @@ const totalRead = computed(() => {
 })
 const readPercent = computed(() => totalArticles.value > 0 ? Math.round((totalRead.value / totalArticles.value) * 100) : 0)
 
-// 预算占位数据（Phase 6 实现后从 budgetStore 读取）
-const totalBudget = computed(() => {
-  try {
-    const budget = JSON.parse(localStorage.getItem('reno_budget_v2') || '[]')
-    return budget.reduce((sum, item) => sum + (parseFloat(item.budget) || 0), 0)
-  } catch { return 0 }
-})
+const totalBudget = computed(() => budgetStore.totalBudget)
+const totalActual = computed(() => budgetStore.totalActual)
+const workerCount = computed(() => workerStore.totalWorkers)
 
-const totalActual = computed(() => {
-  try {
-    const budget = JSON.parse(localStorage.getItem('reno_budget_v2') || '[]')
-    return budget.reduce((sum, item) => sum + (parseFloat(item.actual) || 0), 0)
-  } catch { return 0 }
-})
-
-// 工人占位数据（Phase 7 实现后从 workerStore 读取）
-const workerCount = computed(() => {
-  try {
-    const workers = JSON.parse(localStorage.getItem('reno_workers') || '[]')
-    return workers.length
-  } catch { return 0 }
-})
-
-function formatMoney(val) {
-  if (!val) return '¥0'
-  return '¥' + Number(val).toLocaleString('zh-CN', { maximumFractionDigits: 0 })
-}
 </script>
 
 <style scoped>

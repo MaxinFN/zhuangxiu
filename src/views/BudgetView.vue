@@ -12,9 +12,9 @@
             type="number"
             class="form-input"
             :value="budgetStore.houseInfo.area"
-            @change="e => budgetStore.updateHouseInfo({ area: Number(e.target.value) })"
             placeholder="例如：100"
             min="1"
+            @change="e => budgetStore.updateHouseInfo({ area: Number(e.target.value) })"
           />
         </div>
         <div class="form-group">
@@ -23,9 +23,9 @@
             type="number"
             class="form-input"
             :value="budgetStore.houseInfo.totalBudget"
-            @change="e => budgetStore.updateHouseInfo({ totalBudget: Number(e.target.value) })"
             placeholder="例如：150000"
             min="0"
+            @change="e => budgetStore.updateHouseInfo({ totalBudget: Number(e.target.value) })"
           />
         </div>
         <div class="form-group">
@@ -50,12 +50,28 @@
 
     <!-- 表格 -->
     <div class="card">
-      <BudgetTable @add="openAddModal" @edit="openEditModal" @import="handleImport" />
+      <BudgetTable
+        @add="openAddModal"
+        @edit="openEditModal"
+        @import="handleImport"
+        @delete="onRequestDelete"
+      />
     </div>
 
+    <!-- 删除确认对话框 -->
+    <ConfirmDialog
+      :visible="confirmVisible"
+      type="danger"
+      title="删除预算项目"
+      :message="`确认删除「${confirmTarget?.name || ''}」？删除后不可恢复。`"
+      confirm-text="删除"
+      @confirm="onDeleteConfirm"
+      @cancel="confirmVisible = false"
+    />
+
     <!-- 添加/编辑弹窗 -->
-    <div class="modal-overlay" v-if="showModal" @click.self="showModal = false">
-      <div class="modal modal-lg">
+    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false" @keydown.escape="showModal = false">
+      <div class="modal modal-lg" role="dialog" aria-modal="true" aria-label="预算项目表单">
         <div class="modal-header">
           <div class="modal-title">{{ editingItem ? '编辑预算项目' : '添加预算项目' }}</div>
           <button class="modal-close" @click="showModal = false">✕</button>
@@ -64,7 +80,7 @@
           <div class="budget-form-grid">
             <div class="form-group">
               <label class="form-label">一级分类 *</label>
-              <select class="form-select" v-model="form.cat">
+              <select v-model="form.cat" class="form-select">
                 <option v-for="c in budgetStore.categories" :key="c.key" :value="c.key">
                   {{ c.label }}
                 </option>
@@ -72,39 +88,40 @@
             </div>
             <div class="form-group">
               <label class="form-label">房间</label>
-              <input class="form-input" v-model="form.room" placeholder="客厅、主卧、厨房">
+              <input v-model="form.room" class="form-input" placeholder="客厅、主卧、厨房">
             </div>
             <div class="form-group" style="grid-column: span 2;">
               <label class="form-label">项目名称 *</label>
-              <input class="form-input" v-model="form.name" placeholder="例如：地砖铺贴、防水施工">
+              <input v-model="form.name" class="form-input" :class="{ 'form-input--error': nameError }" placeholder="例如：地砖铺贴、防水施工" @input="nameError = ''">
+              <span v-if="nameError" class="form-error">{{ nameError }}</span>
             </div>
             <div class="form-group" style="grid-column: span 2;">
               <label class="form-label">品牌型号</label>
-              <input class="form-input" v-model="form.brand" placeholder="例如：马可波罗 600×600">
+              <input v-model="form.brand" class="form-input" placeholder="例如：马可波罗 600×600">
             </div>
             <div class="form-group">
               <label class="form-label">单位</label>
-              <input class="form-input" v-model="form.unit" placeholder="㎡ / 套 / 个">
+              <input v-model="form.unit" class="form-input" placeholder="㎡ / 套 / 个">
             </div>
             <div class="form-group">
               <label class="form-label">工程量</label>
-              <input type="number" class="form-input" v-model.number="form.quantity" placeholder="0" min="0" step="0.01">
+              <input v-model.number="form.quantity" type="number" class="form-input" placeholder="0" min="0" step="0.01">
             </div>
             <div class="form-group">
               <label class="form-label">单价（元）</label>
-              <input type="number" class="form-input" v-model.number="form.unitPrice" placeholder="0" min="0">
+              <input v-model.number="form.unitPrice" type="number" class="form-input" placeholder="0" min="0">
             </div>
             <div class="form-group">
               <label class="form-label">预算总价（元）</label>
-              <input type="number" class="form-input" v-model.number="form.budget" placeholder="自动计算或手填" min="0">
+              <input v-model.number="form.budget" type="number" class="form-input" placeholder="自动计算或手填" min="0">
             </div>
             <div class="form-group">
               <label class="form-label">实际支出（元）</label>
-              <input type="number" class="form-input" v-model.number="form.actual" placeholder="0" min="0">
+              <input v-model.number="form.actual" type="number" class="form-input" placeholder="0" min="0">
             </div>
             <div class="form-group">
               <label class="form-label">优先级</label>
-              <select class="form-select" v-model="form.priority">
+              <select v-model="form.priority" class="form-select">
                 <option value="must">🔴 刚需不可省</option>
                 <option value="optional">🟡 可减配</option>
                 <option value="nice">🟢 锦上添花</option>
@@ -112,11 +129,11 @@
             </div>
             <div class="form-group" style="grid-column: span 2;">
               <label class="form-label">施工工艺 & 验收标准</label>
-              <textarea class="form-textarea" v-model="form.craft" placeholder="施工要点和验收标准..." rows="2"></textarea>
+              <textarea v-model="form.craft" class="form-textarea" placeholder="施工要点和验收标准..." rows="2"></textarea>
             </div>
             <div class="form-group" style="grid-column: span 2;">
               <label class="form-label">备注</label>
-              <textarea class="form-textarea" v-model="form.note" placeholder="附加说明、供应商联系方式等" rows="2"></textarea>
+              <textarea v-model="form.note" class="form-textarea" placeholder="附加说明、供应商联系方式等" rows="2"></textarea>
             </div>
           </div>
         </div>
@@ -133,13 +150,22 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import * as XLSX from 'xlsx'
 import { useBudgetStore } from '@/stores/budgetStore'
+import { useUiStore } from '@/stores/uiStore'
 import BudgetTable from '@/components/budget/BudgetTable.vue'
 import BudgetChart from '@/components/budget/BudgetChart.vue'
+import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
 const budgetStore = useBudgetStore()
+const uiStore = useUiStore()
 const showModal = ref(false)
 const editingItem = ref(null)
+const nameError = ref('')
+
+// 确认对话框状态
+const confirmVisible = ref(false)
+const confirmTarget = ref(null)
 
 const form = reactive({
   cat: 'hardwork',
@@ -182,8 +208,9 @@ function openEditModal(item) {
 }
 
 function saveItem() {
+  nameError.value = ''
   if (!form.name.trim()) {
-    alert('请输入项目名称')
+    nameError.value = '请输入项目名称'
     return
   }
   if (editingItem.value) {
@@ -194,6 +221,19 @@ function saveItem() {
   showModal.value = false
 }
 
+function onRequestDelete(item) {
+  confirmTarget.value = item
+  confirmVisible.value = true
+}
+
+function onDeleteConfirm() {
+  if (confirmTarget.value) {
+    budgetStore.removeItem(confirmTarget.value.id)
+  }
+  confirmVisible.value = false
+  confirmTarget.value = null
+}
+
 function handleImport() {
   const input = document.createElement('input')
   input.type = 'file'
@@ -201,8 +241,6 @@ function handleImport() {
   input.onchange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const XLSX = window.XLSX
-    if (!XLSX) return alert('Excel库未加载')
     try {
       const data = await file.arrayBuffer()
       const wb = XLSX.read(data)
@@ -226,8 +264,9 @@ function handleImport() {
       }))
 
       budgetStore.importItems(items)
+      uiStore.showToast(`成功导入 ${items.length} 条预算`, 'success')
     } catch (e) {
-      alert('导入失败：' + e.message)
+      uiStore.showToast('导入失败：' + e.message, 'error')
     }
   }
   input.click()

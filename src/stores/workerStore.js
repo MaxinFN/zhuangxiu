@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { loadJSON, generateId } from '@/utils/storage'
 
 const STORAGE_KEY_WORKERS = 'reno_workers'
 const STORAGE_KEY_CALLS = 'reno_call_records'
@@ -96,17 +97,6 @@ export const useWorkerStore = defineStore('worker', () => {
   function save() {
     localStorage.setItem(STORAGE_KEY_WORKERS, JSON.stringify(workers.value))
     localStorage.setItem(STORAGE_KEY_CALLS, JSON.stringify(callRecords.value))
-  }
-
-  function loadJSON(key, fallback) {
-    try {
-      const raw = localStorage.getItem(key)
-      return raw ? JSON.parse(raw) : fallback
-    } catch { return fallback }
-  }
-
-  function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
   }
 
   return {
