@@ -11,4 +11,24 @@ export default defineConfig({
     },
   },
   assetsInclude: ['**/*.md'],
+
+  server: {
+    open: true,
+  },
+
+  build: {
+    target: 'es2020',
+    cssCodeSplit: false,
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'chart-js': ['chart.js'],
+          marked: ['marked'],
+          highlight: ['highlight.js'],
+          xlsx: ['xlsx'],
+        },
+      },
+    },
+  },
 })

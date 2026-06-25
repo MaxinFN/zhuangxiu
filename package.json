@@ -5,9 +5,10 @@
   "type": "module",
   "description": "装修小白学习助手 — 系统化学习装修流程、材料知识、施工工艺、验收标准",
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
   },
+  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
